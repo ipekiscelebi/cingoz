@@ -1,0 +1,27 @@
+<annotation>
+	<folder></folder>
+	<filename>c4557ca9-b581-49e8-ba0c-f7a47da8de98_png_jpg.rf.72a8c27331086bc51b7cdf2f8d34e207.jpg</filename>
+	<path>c4557ca9-b581-49e8-ba0c-f7a47da8de98_png_jpg.rf.72a8c27331086bc51b7cdf2f8d34e207.jpg</path>
+	<source>
+		<database>roboflow.com</database>
+	</source>
+	<size>
+		<width>1024</width>
+		<height>1024</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>dropdown</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<occluded>0</occluded>
+		<bndbox>
+			<xmin>515</xmin>
+			<xmax>875</xmax>
+			<ymin>301</ymin>
+			<ymax>456</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,27 @@
+<annotation>
+	<folder></folder>
+	<filename>884ffab8-ac01-4794-b277-28f196f17937_png_jpg.rf.484c728204cf59c108fe258a98712f67.jpg</filename>
+	<path>884ffab8-ac01-4794-b277-28f196f17937_png_jpg.rf.484c728204cf59c108fe258a98712f67.jpg</path>
+	<source>
+		<database>roboflow.com</database>
+	</source>
+	<size>
+		<width>1024</width>
+		<height>1024</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>switch</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<occluded>0</occluded>
+		<bndbox>
+			<xmin>252</xmin>
+			<xmax>776</xmax>
+			<ymin>413</ymin>
+			<ymax>614</ymax>
+		</bndbox>
+	</object>
+</annotation>

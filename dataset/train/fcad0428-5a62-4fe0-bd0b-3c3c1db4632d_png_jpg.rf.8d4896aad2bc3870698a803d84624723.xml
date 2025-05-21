@@ -1,0 +1,27 @@
+<annotation>
+	<folder></folder>
+	<filename>fcad0428-5a62-4fe0-bd0b-3c3c1db4632d_png_jpg.rf.8d4896aad2bc3870698a803d84624723.jpg</filename>
+	<path>fcad0428-5a62-4fe0-bd0b-3c3c1db4632d_png_jpg.rf.8d4896aad2bc3870698a803d84624723.jpg</path>
+	<source>
+		<database>roboflow.com</database>
+	</source>
+	<size>
+		<width>1024</width>
+		<height>1024</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>checkbox</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<occluded>0</occluded>
+		<bndbox>
+			<xmin>724</xmin>
+			<xmax>974</xmax>
+			<ymin>79</ymin>
+			<ymax>537</ymax>
+		</bndbox>
+	</object>
+</annotation>
