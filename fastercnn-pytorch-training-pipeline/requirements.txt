@@ -18,7 +18,7 @@ pandas
 tqdm
 
 # Logging----------------------------------
-# wandb
+wandb
 tensorboard
 
 # Model summary----------------------------
@@ -33,6 +33,6 @@ torchmetrics # Evaluation
 vision_transformers
 
 # Export-----------------------------------
-# onnxruntime
-# onnx
-# onnxruntime-gpu
+# onnx==1.18.0
+onnxruntime==1.22.0 # CPU execution.
+# onnxruntime-gpu==1.22.0 # GPU execution. [1.22.x for CUDA 12.x]
