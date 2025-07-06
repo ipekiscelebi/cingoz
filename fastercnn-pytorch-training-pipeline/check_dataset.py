@@ -4,7 +4,7 @@ import glob
 import pandas as pd
 import json
 
-dataset_dir = './datasets/4349_1024x_70-15-15/'
+dataset_dir = '../dataset/'
 files = []
 label_dict = {'button':0, 'input':0, 'checkbox':0, 'dropdown':0, 'label':0, 'icon':0, 'radio':0, 'switch':0}
 total_label_dict = {'button':0, 'input':0, 'checkbox':0, 'dropdown':0, 'label':0, 'icon':0, 'radio':0, 'switch':0}
@@ -31,7 +31,7 @@ def xml_parse(files):
         label_dict.clear()
     df = pd.DataFrame(results)
     df.sort_values(by=['folder','label'],inplace=True,ascending=False)
-    df.to_csv(f'./datasets/dataset_{dataset_dir.split("/")[2]}.csv',index=False)
+    df.to_csv(f'./dataset/dataset_{dataset_dir.split("/")[2]}.csv',index=False)
     sorted_label_dict = {k: v for k, v in sorted(total_label_dict.items(), key=lambda item: item[1],reverse=True)}
     print(f"Total Label Counts: \n{json.dumps(sorted_label_dict, indent=4)}")
     
