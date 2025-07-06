@@ -6,8 +6,8 @@ import json
 
 dataset_dir = './datasets/4349_1024x_70-15-15/'
 files = []
-label_dict = {'button':0, 'input':0, 'checkbox':0, 'dropdown':0, 'label':0, 'icon':0, 'radio':0, 'table':0, 'slider':0, 'switch':0}
-total_label_dict = {'button':0, 'input':0, 'checkbox':0, 'dropdown':0, 'label':0, 'icon':0, 'radio':0, 'table':0, 'slider':0, 'switch':0}
+label_dict = {'button':0, 'input':0, 'checkbox':0, 'dropdown':0, 'label':0, 'icon':0, 'radio':0, 'switch':0}
+total_label_dict = {'button':0, 'input':0, 'checkbox':0, 'dropdown':0, 'label':0, 'icon':0, 'radio':0, 'switch':0}
 results = []
 
 def iterate_files(path):
@@ -19,7 +19,7 @@ def iterate_files(path):
 
 def xml_parse(files):
     for file in files:
-        label_dict = {'button':0, 'input':0, 'checkbox':0, 'dropdown':0, 'label':0, 'icon':0, 'radio':0, 'table':0, 'slider':0, 'switch':0}
+        label_dict = {'button':0, 'input':0, 'checkbox':0, 'dropdown':0, 'label':0, 'icon':0, 'radio':0, 'switch':0}
         tree = ET.parse(file)
         root = tree.getroot()
         for obj in root.findall('object'):
@@ -27,7 +27,7 @@ def xml_parse(files):
             label_dict[name] += 1
             total_label_dict[name] += 1
         # print(f"{file.split('/')[-1]}'s label_dict: {label_dict}")
-        results.append({'file_name':file.split('/')[-1].split('.')[0],'folder':file.split('/')[3],'button':label_dict['button'],'input':label_dict['input'],'checkbox':label_dict['checkbox'],'dropdown':label_dict['dropdown'],'label':label_dict['label'],'icon':label_dict['icon'],'radio':label_dict['radio'],'table':label_dict['table'],'slider':label_dict['slider'],'switch':label_dict['switch']})
+        results.append({'file_name':file.split('/')[-1].split('.')[0],'folder':file.split('/')[3],'button':label_dict['button'],'input':label_dict['input'],'checkbox':label_dict['checkbox'],'dropdown':label_dict['dropdown'],'label':label_dict['label'],'icon':label_dict['icon'],'radio':label_dict['radio'],'switch':label_dict['switch']})
         label_dict.clear()
     df = pd.DataFrame(results)
     df.sort_values(by=['folder','label'],inplace=True,ascending=False)
