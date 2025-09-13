@@ -1,9 +1,74 @@
 import numpy as np
 import cv2
 
-def inference_annotations(
+def convert_detections(
     outputs, 
     detection_threshold, 
+    classes,
+    args
+):
+    """
+    Return the bounding boxes, scores, classes names, and class IDs.
+    """
+    boxes = outputs[0]['boxes'].data.numpy()
+    scores = outputs[0]['scores'].data.numpy()
+
+    # Filter by classes if args.classes is not None.
+    if args['classes'] is not None:
+        labels = outputs[0]['labels'].cpu().numpy()
+        lbl_mask = np.isin(labels, args['classes'])
+        scores = scores[lbl_mask]
+        mask = scores > detection_threshold
+        draw_boxes = boxes[lbl_mask][mask]
+        scores = scores[mask]
+        labels = labels[lbl_mask][mask]
+        pred_classes = [classes[i] for i in labels]
+    # Else get outputs for all classes.
+    else:
+        # Filter out boxes according to `detection_threshold`.
+        boxes = boxes[scores >= detection_threshold].astype(np.int32)
+        draw_boxes = boxes.copy()
+        # Get all the predicited class names.
+        pred_classes = [classes[i] for i in outputs[0]['labels'].cpu().numpy()]
+
+    return draw_boxes, pred_classes, scores, outputs[0]['labels'][:len(draw_boxes)]
+
+def convert_pre_track(
+    draw_boxes, pred_classes, scores
+):
+    final_preds = []
+    for i, box in enumerate(draw_boxes):
+        # Append ([x, y, w, h], score, label_string). For deep sort real-time.
+        final_preds.append(
+            (
+                [box[0], box[1], box[2] - box[0], box[3] - box[1]],
+                scores[i],
+                str(pred_classes[i])
+            )
+        )
+    return final_preds
+
+def convert_post_track(
+    tracks
+):
+    draw_boxes, pred_classes, scores, track_id = [], [], [], []
+    for track in tracks:
+        if not track.is_confirmed():
+            continue
+        score = track.det_conf
+        if score is None:
+            continue
+        track_id = track.track_id
+        pred_class = track.det_class
+        pred_classes.append(f"{track_id} {pred_class}")
+        scores.append(score)
+        draw_boxes.append(track.to_ltrb())
+    return draw_boxes, pred_classes, scores
+
+def inference_annotations(
+    draw_boxes, 
+    pred_classes, 
+    scores, 
     classes,
     colors, 
     orig_image, 
@@ -11,14 +76,6 @@ def inference_annotations(
     args
 ):
     height, width, _ = orig_image.shape
-    boxes = outputs[0]['boxes'].data.numpy()
-    scores = outputs[0]['scores'].data.numpy()
-    # Filter out boxes according to `detection_threshold`.
-    boxes = boxes[scores >= detection_threshold].astype(np.int32)
-    draw_boxes = boxes.copy()
-    # Get all the predicited class names.
-    pred_classes = [classes[i] for i in outputs[0]['labels'].cpu().numpy()]
-
     lw = max(round(sum(orig_image.shape) / 4 * 0.003), 1)  # Line width.
     tf = max(lw - 1, 1) # Font thickness.
     
@@ -27,7 +84,10 @@ def inference_annotations(
         p1 = (int(box[0]/image.shape[1]*width), int(box[1]/image.shape[0]*height))
         p2 = (int(box[2]/image.shape[1]*width), int(box[3]/image.shape[0]*height))
         class_name = pred_classes[j]
-        color = colors[classes.index(class_name)]
+        if args['track']:
+            color = colors[classes.index(' '.join(class_name.split(' ')[1:]))]
+        else:
+            color = colors[classes.index(class_name)]
         cv2.rectangle(
             orig_image,
             p1, p2,

@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import pandas.io.common
 import torch
 import glob as glob
 import os
@@ -7,9 +8,12 @@ import time
 import argparse
 import yaml
 import matplotlib.pyplot as plt
+import pandas
 
 from models.create_fasterrcnn_model import create_model
-from utils.annotations import inference_annotations
+from utils.annotations import (
+    inference_annotations, convert_detections
+)
 from utils.general import set_infer_dir
 from utils.transforms import infer_transforms, resize
 
@@ -114,6 +118,17 @@ def parse_opt():
         action='store_true',
         help='whether to use square image resize, else use aspect ratio resize'
     )
+    parser.add_argument(
+        '--classes',
+        nargs='+',
+        type=int,
+        default=None,
+        help='filter classes by visualization, --classes 1 2 3'
+    )
+    parser.add_argument(
+        '--track',
+        action='store_true'
+    )
     args = vars(parser.parse_args())
     return args
 
@@ -177,6 +192,10 @@ def main(args):
     # score below this will be discarded.
     detection_threshold = args['threshold']
 
+    # Define dictionary to collect boxes detected in each file 
+    pred_boxes = {}
+    box_id = 1
+
     # To count the total number of frames iterated through.
     frame_count = 0
     # To keep adding the frames' FPS.
@@ -215,9 +234,13 @@ def main(args):
         outputs = [{k: v.to('cpu') for k, v in t.items()} for t in outputs]
         # Carry further only if there are detected boxes.
         if len(outputs[0]['boxes']) != 0:
+            draw_boxes, pred_classes, scores, labels = convert_detections(
+                outputs, detection_threshold, CLASSES, args
+            )
             orig_image = inference_annotations(
-                outputs, 
-                detection_threshold, 
+                draw_boxes, 
+                pred_classes, 
+                scores,
                 CLASSES,
                 COLORS, 
                 orig_image, 

@@ -20,7 +20,10 @@ import matplotlib.pyplot as plt
 
 from utils.transforms import infer_transforms, resize
 from utils.general import set_infer_dir
-from utils.annotations import inference_annotations
+from utils.annotations import (
+    inference_annotations, convert_detections
+)
+from utils.logging import LogJSON
 
 def collect_all_images(dir_test):
     """
@@ -122,6 +125,17 @@ def parse_opt():
         help='do not show labels during on top of bounding boxes'
     )
     parser.add_argument(
+        '--classes',
+        nargs='+',
+        type=int,
+        default=None,
+        help='filter classes by visualization, --classes 1 2 3'
+    )
+    parser.add_argument(
+        '--track',
+        action='store_true'
+    )
+    parser.add_argument(
         '-ncsv', '--no-csv', 
         dest='csv', 
         action='store_true',
@@ -201,9 +215,13 @@ def main(args):
 
         # Carry further only if there are detected boxes.
         if len(outputs[0]['boxes']) != 0:
+            draw_boxes, pred_classes, scores, labels = convert_detections(
+                outputs, detection_threshold, CLASSES, args
+            )
             orig_image = inference_annotations(
-                outputs, 
-                detection_threshold, 
+                draw_boxes, 
+                pred_classes, 
+                scores,
                 CLASSES,
                 COLORS, 
                 orig_image, 
